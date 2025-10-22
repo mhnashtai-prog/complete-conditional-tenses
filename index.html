@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>INTUITY: Conditional Mastery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      background: #0a0a0a;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .background {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(201, 169, 97, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, rgba(185, 78, 72, 0.06) 0%, transparent 45%),
+                  #0a0a0a;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+    }
+    
+    .subtitle {
+      font-size: 0.875rem;
+      color: #C9A961;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .author {
+      font-size: 0.75rem;
+      color: #8e8e93;
+      margin-bottom: 0.25rem;
+      font-weight: 400;
+    }
+
+    .topic {
+      font-size: 0.8125rem;
+      color: #C9A961;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .level-selector {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .level-btn {
+      padding: 0.75rem 1.5rem;
+      background: rgba(28, 28, 30, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201, 169, 97, 0.25);
+      border-radius: 0.75rem;
+      color: #8e8e93;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .level-btn:hover {
+      background: rgba(28, 28, 30, 0.95);
+      color: #C9A961;
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .level-btn.active {
+      background: rgba(201, 169, 97, 0.15);
+      color: #C9A961;
+      border-color: rgba(201, 169, 97, 0.5);
+      box-shadow: 0 0 20px rgba(201, 169, 97, 0.3);
+    }
+    
+    .progress-section {
+      background: rgba(28, 28, 30, 0.85);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      border: 1.5px solid rgba(201, 169, 97, 0.25);
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.8rem;
+      color: #8e8e93;
+      font-weight: 600;
+    }
+    
+    .progress-bar-container {
+      height: 8px;
+      background: rgba(201, 169, 97, 0.15);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #C9A961 0%, #b94e48 100%);
+      border-radius: 4px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 12px rgba(201, 169, 97, 0.5);
+      width: 0%;
+    }
+    
+    .card-container {
+      perspective: 1500px;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      width: 100%;
+      min-height: 500px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+    
+    .card-face {
+      width: 100%;
+      min-height: 500px;
+      position: absolute;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: rgba(28, 28, 30, 0.98);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      border: 1.5px solid rgba(201, 169, 97, 0.25);
+      border-radius: 1.5rem;
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    .card-front {
+      z-index: 2;
+    }
+    
+    .card-back {
+      transform: rotateY(180deg);
+      background: rgba(28, 28, 30, 1);
+      z-index: 3;
+    }
+    
+    .card-label {
+      font-size: 0.75rem;
+      color: #636366;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    
+    .card-main-text {
+      font-size: 1.5rem;
+      line-height: 1.6;
+      color: #e5e5e7;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      max-width: 700px;
+    }
+
+    .condition-part {
+      color: #4a90e2;
+      font-weight: 600;
+    }
+
+    .result-part {
+      color: #b94e48;
+      font-weight: 600;
+    }
+
+    .time-marker {
+      color: #C9A961;
+      font-weight: 600;
+    }
+
+    .verb-form {
+      color: #C9A961;
+      font-weight: 600;
+    }
+    
+    .card-back .card-main-text {
+      font-size: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .transformation-box {
+      background: rgba(201, 169, 97, 0.08);
+      border: 1px solid rgba(201, 169, 97, 0.3);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      text-align: left;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .transformation-step {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .step-label {
+      color: #C9A961;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+      display: block;
+    }
+
+    .step-text {
+      color: #e5e5e7;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .arrow-down {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #636366;
+      margin: 0.5rem 0;
+    }
+    
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+    
+    .card-hint {
+      font-size: 0.875rem;
+      color: #8e8e93;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(201, 169, 97, 0.08);
+      border-radius: 0.75rem;
+      border: 1px solid rgba(201, 169, 97, 0.2);
+    }
+    
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    
+    .arrows {
+      display: flex;
+      gap: 3rem;
+      align-items: center;
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .arrow {
+      width: 3.5rem;
+      height: 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(28, 28, 30, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(201, 169, 97, 0.25);
+      border-radius: 0.75rem;
+      font-size: 1.5rem;
+      color: #8e8e93;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .arrow:hover {
+      background: rgba(28, 28, 30, 0.95);
+      color: #C9A961;
+      border-color: rgba(201, 169, 97, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(201, 169, 97, 0.2);
+    }
+    
+    .nav-dots {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 100%;
+    }
+    
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(201, 169, 97, 0.2);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(201, 169, 97, 0.3);
+    }
+    
+    .dot:hover {
+      transform: scale(1.4);
+      background: rgba(201, 169, 97, 0.4);
+    }
+    
+    .dot.active {
+      background: #C9A961;
+      box-shadow: 0 0 12px rgba(201, 169, 97, 0.6);
+      transform: scale(1.3);
+    }
+    
+    .dot.viewed {
+      background: rgba(185, 78, 72, 0.5);
+    }
+    
+    .reset-btn {
+      padding: 1rem 2.5rem;
+      background: #C9A961;
+      color: #0a0a0a;
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(201, 169, 97, 0.3);
+    }
+    
+    .reset-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 169, 97, 0.4);
+      background: #d4b56f;
+    }
+    
+    .category-badge {
+      display: inline-block;
+      padding: 0.375rem 1rem;
+      background: rgba(201, 169, 97, 0.15);
+      border: 1px solid rgba(201, 169, 97, 0.3);
+      border-radius: 1.5rem;
+      font-size: 0.7rem;
+      color: #C9A961;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .legend {
+      background: rgba(28, 28, 30, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201, 169, 97, 0.25);
+      border-radius: 1rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .color-condition { background: #4a90e2; }
+    .color-result { background: #b94e48; }
+    .color-time { background: #C9A961; }
+    .color-verb { background: #C9A961; }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem;
+      }
+      
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      .card-face {
+        min-height: 450px;
+        padding: 2rem 1.5rem;
+      }
+      
+      .card-main-text {
+        font-size: 1.25rem;
+      }
+      
+      .transformation-box {
+        padding: 1rem;
+      }
+      
+      .arrows {
+        gap: 2rem;
+      }
+      
+      .arrow {
+        width: 3rem;
+        height: 3rem;
+      }
+
+      .level-selector {
+        gap: 0.5rem;
+      }
+
+      .level-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+      }
+
+      .legend {
+        font-size: 0.7rem;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  
+  <div class="container">
+    <header>
+      <h1>INTUITY</h1>
+      <p class="subtitle">Intuitive & Immersive Learning</p>
+      <p class="author">Majid Nashtai</p>
+      <p class="topic">Conditionals</p>
+    </header>
+
+    <div class="level-selector">
+      <button class="level-btn active" onclick="changeLevel('zero')" id="btnZero">Zero Conditional</button>
+      <button class="level-btn" onclick="changeLevel('first')" id="btnFirst">First Conditional</button>
+      <button class="level-btn" onclick="changeLevel('second')" id="btnSecond">Second Conditional</button>
+      <button class="level-btn" onclick="changeLevel('third')" id="btnThird">Third Conditional</button>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color color-condition"></div>
+        <span>Condition Clause</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color color-result"></div>
+        <span>Result Clause</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color color-time"></div>
+        <span>Time/Context</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color color-verb"></div>
+        <span>Verb Form</span>
+      </div>
+    </div>
+    
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>Progress</span>
+        <span id="progressText">0/0 viewed</span>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+    
+    <div class="card-container">
+      <div class="card" id="card" onclick="flipCard()">
+        <div class="card-face card-front">
+          <div class="card-label">CONDITIONAL SENTENCE</div>
+          <div class="category-badge" id="categoryFront"></div>
+          <div class="card-icon" id="iconFront">⚡</div>
+          <div class="card-main-text" id="sentenceText"></div>
+          <div class="card-hint">💡 Click card to see structure breakdown</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-label">STRUCTURE BREAKDOWN</div>
+          <div class="category-badge" id="categoryBack"></div>
+          <div class="card-icon" id="iconBack">🔍</div>
+          <div id="transformationContent"></div>
+          <div class="card-hint">💡 Click to see sentence again</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <div class="arrows">
+        <div class="arrow" onclick="prevCard(); event.stopPropagation();">←</div>
+        <div class="arrow" onclick="nextCard(); event.stopPropagation();">→</div>
+      </div>
+      <div class="nav-dots" id="navDots"></div>
+      <button class="reset-btn" onclick="resetProgress()">↻ Reset Progress</button>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      zero: [
+        {
+          sentence: "<span class='condition-part'>If you heat water to 100°C</span>, <span class='result-part'>it boils</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>General truths & scientific facts</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + <span class='verb-form'>present simple</span></span>"},
+            {label: "Result", text: "<span class='result-part'><span class='verb-form'>present simple</span></span>"},
+            {label: "Usage", text: "Facts that are always true when the condition happens"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If it rains</span>, <span class='result-part'>the ground gets wet</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Natural consequence</span>"},
+            {label: "Structure", text: "If + present → present"},
+            {label: "Meaning", text: "Automatic result, happens every time"},
+            {label: "Note", text: "Can use 'when' instead of 'if' for zero conditional"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>When you press this button</span>, <span class='result-part'>the machine starts</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional with <span class='verb-form'>WHEN</span>"},
+            {label: "Condition", text: "<span class='condition-part'>When + present simple</span>"},
+            {label: "Result", text: "<span class='result-part'>present simple</span>"},
+            {label: "Usage", text: "Describes how things work or function"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If you mix blue and yellow</span>, <span class='result-part'>you get green</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Universal truth</span>"},
+            {label: "Pattern", text: "If + present simple → present simple"},
+            {label: "Context", text: "Scientific/physical facts"},
+            {label: "Alternative", text: "When you mix blue and yellow, you get green"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If plants don't get water</span>, <span class='result-part'>they die</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Negative condition</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + don't/doesn't + verb</span>"},
+            {label: "Result", text: "<span class='result-part'>present simple</span>"},
+            {label: "Meaning", text: "What always happens without something"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If you freeze water</span>, <span class='result-part'>it becomes ice</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Physical transformation</span>"},
+            {label: "Formula", text: "If + present → present"},
+            {label: "Usage", text: "Describes natural processes"},
+            {label: "Certainty", text: "100% certain result every time"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>When babies are hungry</span>, <span class='result-part'>they cry</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Habitual behavior</span>"},
+            {label: "Pattern", text: "When + present → present"},
+            {label: "Context", text: "General human/animal behavior patterns"},
+            {label: "Note", text: "'When' emphasizes this always happens"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If you touch fire</span>, <span class='result-part'>you get burned</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Cause and effect</span>"},
+            {label: "Warning", text: "Often used for warnings and safety"},
+            {label: "Structure", text: "If + present simple → present simple"},
+            {label: "Meaning", text: "Predictable and unavoidable consequence"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If the sun sets</span>, <span class='result-part'>it gets dark</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>Natural phenomenon</span>"},
+            {label: "Pattern", text: "If/When + present → present"},
+            {label: "Context", text: "Describing natural cycles"},
+            {label: "Certainty", text: "Inevitable, predictable result"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>When you exercise regularly</span>, <span class='result-part'>your health improves</span>.",
+          steps: [
+            {label: "Type", text: "Zero Conditional - <span class='time-marker'>General consequence</span>"},
+            {label: "Usage", text: "Advice, health facts, general wisdom"},
+            {label: "Structure", text: "When + present → present"},
+            {label: "Note", text: "States what generally happens, not specific instance"}
+          ]
+        }
+      ],
+      
+      first: [
+        {
+          sentence: "<span class='condition-part'>If it rains tomorrow</span>, <span class='result-part'>we will cancel the picnic</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Real future possibility</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + <span class='verb-form'>present simple</span></span>"},
+            {label: "Result", text: "<span class='result-part'>will + <span class='verb-form'>base verb</span></span>"},
+            {label: "Usage", text: "Likely/possible future situations and their consequences"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If you study hard</span>, <span class='result-part'>you will pass the exam</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Future prediction</span>"},
+            {label: "Structure", text: "If + present → will + verb"},
+            {label: "Probability", text: "Speaker believes this is realistic and possible"},
+            {label: "Context", text: "Advice, predictions, plans"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If she arrives early</span>, <span class='result-part'>we can start the meeting</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional with <span class='verb-form'>CAN</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + present simple</span>"},
+            {label: "Result", text: "<span class='result-part'>can/may/might + verb</span>"},
+            {label: "Note", text: "Modals (can, may, might) are common in first conditional"}
+          ]
+        },
+        {
+          sentence: "<span class='result-part'>I'll call you</span> <span class='condition-part'>if I need help</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Reversed order</span>"},
+            {label: "Pattern", text: "Result clause first, then condition"},
+            {label: "Punctuation", text: "No comma when result comes first"},
+            {label: "Meaning", text: "Same meaning as: If I need help, I'll call you"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If they don't hurry</span>, <span class='result-part'>they will miss the bus</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Negative condition</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + don't/doesn't + verb</span>"},
+            {label: "Result", text: "<span class='result-part'>will + verb</span>"},
+            {label: "Warning", text: "Often used to warn about consequences"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If you see John</span>, <span class='result-part'>please tell him to call me</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Request/Instruction</span>"},
+            {label: "Result", text: "<span class='result-part'>Imperative (command)</span>"},
+            {label: "Usage", text: "If + present → imperative (do/don't + verb)"},
+            {label: "Context", text: "Giving instructions based on conditions"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If we save enough money</span>, <span class='result-part'>we're going to buy a car</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional with <span class='verb-form'>GOING TO</span>"},
+            {label: "Alternative", text: "Can use 'going to' instead of 'will'"},
+            {label: "Difference", text: "'Going to' suggests a plan already decided"},
+            {label: "Structure", text: "If + present → be going to + verb"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>Unless you apologize</span>, <span class='result-part'>she won't forgive you</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional with <span class='verb-form'>UNLESS</span>"},
+            {label: "Meaning", text: "Unless = If... not"},
+            {label: "Equivalent", text: "If you don't apologize, she won't forgive you"},
+            {label: "Usage", text: "Unless introduces negative condition"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If the weather is nice</span>, <span class='result-part'>we might go to the beach</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Less certain</span>"},
+            {label: "Result", text: "<span class='result-part'>might/may + verb</span>"},
+            {label: "Certainty", text: "Might/may = less certain than will"},
+            {label: "Usage", text: "When result is possible but not definite"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If he finishes work on time</span>, <span class='result-part'>he'll join us for dinner</span>.",
+          steps: [
+            {label: "Type", text: "First Conditional - <span class='time-marker'>Future arrangement</span>"},
+            {label: "Contraction", text: "he'll = he will"},
+            {label: "Structure", text: "If + present simple → will + base verb"},
+            {label: "Context", text: "Making plans dependent on a condition"}
+          ]
+        }
+      ],
+      
+      second: [
+        {
+          sentence: "<span class='condition-part'>If I won the lottery</span>, <span class='result-part'>I would travel the world</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Hypothetical/Unreal present</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + <span class='verb-form'>past simple</span></span>"},
+            {label: "Result", text: "<span class='result-part'>would + <span class='verb-form'>base verb</span></span>"},
+            {label: "Reality", text: "Speaker doesn't expect to win - it's imaginary"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If I were you</span>, <span class='result-part'>I would accept the offer</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Advice</span>"},
+            {label: "Special Case", text: "<span class='verb-form'>Were</span> (not was) for all subjects"},
+            {label: "Usage", text: "Giving advice in hypothetical situations"},
+            {label: "Note", text: "'If I were you' is a fixed expression for advice"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If we had more time</span>, <span class='result-part'>we could visit the museum</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional with <span class='verb-form'>COULD</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + past simple</span>"},
+            {label: "Result", text: "<span class='result-part'>could/might + verb</span>"},
+            {label: "Meaning", text: "We don't have time, so this is impossible now"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If she knew the answer</span>, <span class='result-part'>she would tell us</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Unreal present</span>"},
+            {label: "Reality", text: "She doesn't know the answer"},
+            {label: "Structure", text: "If + past → would + verb"},
+            {label: "Implication", text: "The opposite of the condition is true"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If they lived closer</span>, <span class='result-part'>we would see them more often</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Contrary to fact</span>"},
+            {label: "Reality", text: "They don't live close, so we can't see them often"},
+            {label: "Pattern", text: "If + past simple → would + base verb"},
+            {label: "Context", text: "Wishing for a different present situation"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If it wasn't so expensive</span>, <span class='result-part'>I'd buy it</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Negative condition</span>"},
+            {label: "Contraction", text: "I'd = I would"},
+            {label: "Reality", text: "It IS expensive, so I won't buy it"},
+            {label: "Formal", text: "Better to use 'weren't' instead of 'wasn't'"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If he studied harder</span>, <span class='result-part'>he might pass the exam</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Less certain result</span>"},
+            {label: "Result", text: "<span class='result-part'>might/could + verb</span>"},
+            {label: "Reality", text: "He doesn't study hard enough"},
+            {label: "Uncertainty", text: "Might = even if condition was true, result not certain"}
+          ]
+        },
+        {
+          sentence: "<span class='result-part'>I would be happier</span> <span class='condition-part'>if I had a better job</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Reversed order</span>"},
+            {label: "Pattern", text: "Result first, then condition"},
+            {label: "Punctuation", text: "No comma when result comes first"},
+            {label: "Reality", text: "I don't have a better job, so I'm not happier"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If we didn't have to work</span>, <span class='result-part'>we could go to the beach</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Impossible present</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + didn't + verb</span>"},
+            {label: "Reality", text: "We DO have to work"},
+            {label: "Meaning", text: "Imagining a different present situation"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If I were rich</span>, <span class='result-part'>I wouldn't work</span>.",
+          steps: [
+            {label: "Type", text: "Second Conditional - <span class='time-marker'>Fantasy/Dream</span>"},
+            {label: "Grammar", text: "Use 'were' for all subjects (formal)"},
+            {label: "Result", text: "<span class='result-part'>wouldn't = would not</span>"},
+            {label: "Reality", text: "I'm not rich, so I have to work"}
+          ]
+        }
+      ],
+      
+      third: [
+        {
+          sentence: "<span class='condition-part'>If I had studied harder</span>, <span class='result-part'>I would have passed the exam</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Unreal past</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + <span class='verb-form'>past perfect</span></span>"},
+            {label: "Result", text: "<span class='result-part'>would have + <span class='verb-form'>past participle</span></span>"},
+            {label: "Reality", text: "I didn't study hard, so I didn't pass (past regret)"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If they had left earlier</span>, <span class='result-part'>they wouldn't have missed the train</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Past regret</span>"},
+            {label: "Structure", text: "If + had + past participle → would have + past participle"},
+            {label: "Reality", text: "They didn't leave early, so they missed the train"},
+            {label: "Usage", text: "Criticizing or regretting past actions"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If she had known about the party</span>, <span class='result-part'>she would have come</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Past impossibility</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + had known</span>"},
+            {label: "Result", text: "<span class='result-part'>would have come</span>"},
+            {label: "Reality", text: "She didn't know, so she didn't come"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If we had taken the map</span>, <span class='result-part'>we wouldn't have got lost</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Past mistake</span>"},
+            {label: "Pattern", text: "If + had + pp → wouldn't have + pp"},
+            {label: "Reality", text: "We didn't take the map, so we got lost"},
+            {label: "Emotion", text: "Expressing regret about past decision"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If he had listened to my advice</span>, <span class='result-part'>he could have avoided the problem</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional with <span class='verb-form'>COULD</span>"},
+            {label: "Result", text: "<span class='result-part'>could/might have + past participle</span>"},
+            {label: "Reality", text: "He didn't listen, so he didn't avoid it"},
+            {label: "Note", text: "Could have = was possible but didn't happen"}
+          ]
+        },
+        {
+          sentence: "<span class='result-part'>I would have called you</span> <span class='condition-part'>if I had had your number</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Reversed order</span>"},
+            {label: "Note", text: "'had had' = past perfect of 'have'"},
+            {label: "Pattern", text: "Result first, then condition (no comma)"},
+            {label: "Reality", text: "I didn't have your number, so I didn't call"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If you had told me earlier</span>, <span class='result-part'>I might have been able to help</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Uncertain past</span>"},
+            {label: "Result", text: "<span class='result-part'>might have + past participle</span>"},
+            {label: "Certainty", text: "Might have = less certain than would have"},
+            {label: "Reality", text: "You didn't tell me, so I couldn't help"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If it hadn't rained</span>, <span class='result-part'>we would have gone to the beach</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Negative condition</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + hadn't + past participle</span>"},
+            {label: "Contraction", text: "hadn't = had not"},
+            {label: "Reality", text: "It DID rain, so we didn't go to the beach"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If they had invested wisely</span>, <span class='result-part'>they would have made a profit</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Past opportunity</span>"},
+            {label: "Structure", text: "If + had + pp → would have + pp"},
+            {label: "Reality", text: "They didn't invest wisely, so they didn't profit"},
+            {label: "Context", text: "Reflecting on lost opportunities"}
+          ]
+        },
+        {
+          sentence: "<span class='condition-part'>If she had been more careful</span>, <span class='result-part'>the accident wouldn't have happened</span>.",
+          steps: [
+            {label: "Type", text: "Third Conditional - <span class='time-marker'>Past blame/regret</span>"},
+            {label: "Condition", text: "<span class='condition-part'>If + had been + adjective</span>"},
+            {label: "Result", text: "<span class='result-part'>wouldn't have + past participle</span>"},
+            {label: "Reality", text: "She wasn't careful, so the accident happened"}
+          ]
+        }
+      ]
+    };
+
+    let currentLevel = 'zero';
+    let currentIndex = 0;
+    let viewedCards = new Set();
+    let isFlipped = false;
+
+    function changeLevel(level) {
+      currentLevel = level;
+      currentIndex = 0;
+      viewedCards.clear();
+      isFlipped = false;
+      
+      document.querySelectorAll('.level-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('btn' + level.charAt(0).toUpperCase() + level.slice(1)).classList.add('active');
+      
+      updateCard();
+      renderDots();
+      updateProgress();
+    }
+
+    function updateCard() {
+      const cardData = data[currentLevel][currentIndex];
+      const card = document.getElementById('card');
+      
+      if (isFlipped) {
+        card.classList.remove('flipped');
+        isFlipped = false;
+        const arrows = document.querySelector('.arrows');
+        arrows.style.opacity = '1';
+        arrows.style.pointerEvents = 'auto';
+      }
+      
+      document.getElementById('sentenceText').innerHTML = cardData.sentence;
+      
+      let transformationHTML = '<div class="card-main-text">' + cardData.sentence + '</div>';
+      transformationHTML += '<div class="transformation-box">';
+      
+      cardData.steps.forEach((step, index) => {
+        transformationHTML += '<div class="transformation-step">';
+        transformationHTML += '<span class="step-label">' + step.label + '</span>';
+        transformationHTML += '<div class="step-text">' + step.text + '</div>';
+        transformationHTML += '</div>';
+        if (index < cardData.steps.length - 1) {
+          transformationHTML += '<div class="arrow-down">↓</div>';
+        }
+      });
+      
+      transformationHTML += '</div>';
+      document.getElementById('transformationContent').innerHTML = transformationHTML;
+      
+      const categoryNames = {
+        zero: 'Zero Conditional',
+        first: 'First Conditional',
+        second: 'Second Conditional',
+        third: 'Third Conditional'
+      };
+      const categoryText = categoryNames[currentLevel];
+      document.getElementById('categoryFront').textContent = categoryText;
+      document.getElementById('categoryBack').textContent = categoryText;
+      
+      viewedCards.add(currentLevel + '-' + currentIndex);
+      updateProgress();
+      updateDots();
+    }
+
+    function flipCard() {
+      const card = document.getElementById('card');
+      card.classList.toggle('flipped');
+      isFlipped = !isFlipped;
+      
+      const arrows = document.querySelector('.arrows');
+      if (isFlipped) {
+        arrows.style.opacity = '0';
+        arrows.style.pointerEvents = 'none';
+      } else {
+        arrows.style.opacity = '1';
+        arrows.style.pointerEvents = 'auto';
+      }
+    }
+
+    function nextCard() {
+      if (currentIndex < data[currentLevel].length - 1) {
+        currentIndex++;
+        updateCard();
+      }
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCard();
+      }
+    }
+
+    function renderDots() {
+      const dotsContainer = document.getElementById('navDots');
+      dotsContainer.innerHTML = '';
+      
+      data[currentLevel].forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.onclick = () => {
+          currentIndex = index;
+          updateCard();
+        };
+        dotsContainer.appendChild(dot);
+      });
+      
+      updateDots();
+    }
+
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.classList.remove('active', 'viewed');
+        if (index === currentIndex) {
+          dot.classList.add('active');
+        } else if (viewedCards.has(currentLevel + '-' + index)) {
+          dot.classList.add('viewed');
+        }
+      });
+    }
+
+    function updateProgress() {
+      const total = data[currentLevel].length;
+      let viewed = 0;
+      
+      for (let i = 0; i < total; i++) {
+        if (viewedCards.has(currentLevel + '-' + i)) {
+          viewed++;
+        }
+      }
+      
+      const percentage = (viewed / total) * 100;
+      document.getElementById('progressBar').style.width = percentage + '%';
+      document.getElementById('progressText').textContent = viewed + '/' + total + ' viewed';
+    }
+
+    function resetProgress() {
+      viewedCards.clear();
+      currentIndex = 0;
+      isFlipped = false;
+      updateCard();
+      updateProgress();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevCard();
+      if (e.key === 'ArrowRight') nextCard();
+      if (e.key === ' ') {
+        e.preventDefault();
+        flipCard();
+      }
+    });
+
+    updateCard();
+    renderDots();
+    updateProgress();
+  </script>
+</body>
+</html>
+            
